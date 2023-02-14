@@ -1,7 +1,7 @@
 import React from "react";
-import { Button } from "./components/Button/Button";
-import { Link } from "./components/Link/Link";
-import { UserCard } from "./components/Users/UserCard";
+// import { Button } from "./components/Button/Button";
+// import { Link } from "./components/Link/Link";
+// import { UserCard } from "./components/Users/UserCard";
 import { UsersList } from "./components/Users/UsersList";
 import usersJson from "./data/users.json";
 

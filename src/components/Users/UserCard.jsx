@@ -3,7 +3,7 @@ import classNames from "classnames";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { HiStatusOnline } from "react-icons/hi";
-import defaultAvatar from "../../images/default-avatar.jpg";
+// import defaultAvatar from "../../images/default-avatar.jpg";
 import styles from "./Users.module.css";
 
 const CardBody = styled.li`
