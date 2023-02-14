@@ -7,7 +7,8 @@
     "email": "atuny0@sohu.com",
     "phone": "+63 791 675 8914",
     "birthDate": "2000-12-25",
-    "image": "https://robohash.org/hicveldicta.png"
+    "image": "https://robohash.org/hicveldicta.png",
+    "isOnline": false
   },
   {
     "id": 2,
@@ -17,7 +18,8 @@
     "email": "hbingley1@plala.or.jp",
     "phone": "+7 813 117 7139",
     "birthDate": "2003-08-02",
-    "image": "https://robohash.org/doloremquesintcorrupti.png"
+    "image": null,
+    "isOnline": true
   },
   {
     "id": 3,
@@ -27,7 +29,8 @@
     "email": "rshawe2@51.la",
     "phone": "+63 739 292 7942",
     "birthDate": "1992-12-30",
-    "image": "https://robohash.org/consequunturautconsequatur.png"
+    "image": "https://robohash.org/consequunturautconsequatur.png",
+    "isOnline": true
   },
   {
     "id": 4,
@@ -37,7 +40,8 @@
     "email": "yraigatt3@nature.com",
     "phone": "+86 461 145 4186",
     "birthDate": "1969-01-16",
-    "image": "https://robohash.org/facilisdignissimosdolore.png"
+    "image": "https://robohash.org/facilisdignissimosdolore.png",
+    "isOnline": false
   },
   {
     "id": 5,
@@ -47,6 +51,7 @@
     "email": "kmeus4@upenn.edu",
     "phone": "+372 285 771 1911",
     "birthDate": "1968-11-03",
-    "image": "https://robohash.org/adverovelit.png"
+    "image": "https://robohash.org/adverovelit.png",
+    "isOnline": true
   }
 ]

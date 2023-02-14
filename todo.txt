@@ -1,0 +1,12 @@
+To do: 
+  - fragments;
+  - component composition;
+  - collections key;
+  - image import;
+  - conditional render;
+  - global css normalize;
+  - inline styles;
+  - regular css;
+  - module css;
+  - classnames;
+  - styled-components props composition;

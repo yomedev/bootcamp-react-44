@@ -1,19 +1,39 @@
 import React from "react";
-import { Link } from "./Link";
+import { Button } from "./components/Button/Button";
+import { Link } from "./components/Link/Link";
+import { UserCard } from "./components/Users/UserCard";
+import { UsersList } from "./components/Users/UsersList";
+import usersJson from "./data/users.json";
+
+// console.log(usersJson);
+
+// const user = usersJson[0];
 
 export const App = () => {
   console.log("App");
   // return React.createElement("div", null, 'App');
+  // const { firstName, lastName, phone, email } = user;
   return (
-    <div>
-      <Link path="/details" title="To home">
-        My link
+    <>
+      {/* <Button primary>Enter</Button>
+      <Button secondary>Enter</Button> */}
+      {/* <Link underline path="/details" title="To home">
+        Home
       </Link>
+      <br />
       <Link path="/contacts" title="To contacts">
         Contacts
-      </Link>
-      <Link title="To home">Home</Link>
-    </div>
+      </Link> */}
+
+      <UsersList title="My users list" users={usersJson} />
+      {/* <UserCard
+        firstName={firstName}
+        lastName={lastName}
+        phone={phone}
+        email={email}
+      /> */}
+      {/* <UserCard {...user} /> */}
+    </>
   );
 };
 

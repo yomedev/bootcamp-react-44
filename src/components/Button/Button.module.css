@@ -1,0 +1,16 @@
+.btn {
+  border: none;
+  display: block;
+  padding: 10px 15px;
+  margin: 10px;
+}
+
+.primary {
+  background-color: blue;
+  color: white;
+}
+
+.secondary {
+  background-color: grey;
+  color: white;
+}
