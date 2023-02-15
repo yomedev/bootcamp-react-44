@@ -1,40 +1,17 @@
-import React from "react";
-// import { Button } from "./components/Button/Button";
-// import { Link } from "./components/Link/Link";
-// import { UserCard } from "./components/Users/UserCard";
-import { UsersList } from "./components/Users/UsersList";
-import usersJson from "./data/users.json";
-
-// console.log(usersJson);
-
-// const user = usersJson[0];
+// import { Banner } from './components/Banner';
+// import { Counter } from './components/Counter';
+import { Header, Layout } from './components/Layout';
+import { UsersList } from './components/Users';
+import usersJson from './data/users.json'
 
 export const App = () => {
-  console.log("App");
-  // return React.createElement("div", null, 'App');
-  // const { firstName, lastName, phone, email } = user;
   return (
-    <>
-      {/* <Button primary>Enter</Button>
-      <Button secondary>Enter</Button> */}
-      {/* <Link underline path="/details" title="To home">
-        Home
-      </Link>
-      <br />
-      <Link path="/contacts" title="To contacts">
-        Contacts
-      </Link> */}
+    <Layout>
+      <Header title="Hello world!" />
 
-      <UsersList title="My users list" users={usersJson} />
-      {/* <UserCard
-        firstName={firstName}
-        lastName={lastName}
-        phone={phone}
-        email={email}
-      /> */}
-      {/* <UserCard {...user} /> */}
-    </>
+      {/* <Counter  /> */}
+      {/* <Banner /> */}
+      <UsersList users={usersJson} />
+    </Layout>
   );
 };
-
-// Link({title: "To home", children: "Home"})
