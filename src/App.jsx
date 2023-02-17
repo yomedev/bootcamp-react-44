@@ -1,17 +1,20 @@
 import { ToastContainer } from 'react-toastify';
 import { Header, Layout } from './components/Layout';
 import { Users } from './components/Users/Users';
-// import { LoginForm } from './components/LoginForm';
+// import { Timer } from './components/Timer';
+// import { Rerender } from './components/Rerender';
 
 
 export const App = () => {
   return (
     <Layout>
       <Header title="Hello world!" />
-
-      {/* <LoginForm /> */}
       <Users />
+      {/* <Timer /> */}
+      {/* <Rerender /> */}
       <ToastContainer />
     </Layout>
   );
 };
+
+// new Users()

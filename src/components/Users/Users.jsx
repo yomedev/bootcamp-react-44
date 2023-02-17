@@ -1,19 +1,52 @@
 import React, { Component } from "react";
-import { UsersFilters } from "./UsersFilters/UsersFilters";
-import { UsersList } from "./UsersList";
+import { FiPlus } from "react-icons/fi";
+import { UsersList } from "./components/UsersList";
 import usersJson from "../../data/users.json";
-import { NotFound } from "./NotFound/NotFound";
+import { NotFound } from "../NotFound/NotFound";
+import { SkillsFilter } from "./components/SkillsFilter";
+import { AvailabilityFilter } from "./components/AvailabilityFilter";
+import { SearchInput } from "./components/SearchInput";
+import { NewUserForm } from "./components/NewUserForm";
+import { Modal } from "../Modal/Modal";
 
+const ALL_SKILL_VALUE = "all";
+
+const LOCAL_STORAGE_USERS_KEY = "users";
 
 export class Users extends Component {
   state = {
+    data: this.props.defaultData,
     users: usersJson,
-    filters: {
-      isAvailableChacked: false,
-      skills: "",
-      search: "",
-    },
+    isModalOpen: false,
+    isAvailableChacked: false,
+    skills: ALL_SKILL_VALUE,
+    search: "",
   };
+
+  componentDidMount() {
+    const localUsersData = JSON.parse(
+      localStorage.getItem(LOCAL_STORAGE_USERS_KEY)
+    );
+
+    if (localUsersData && localUsersData.length) {
+      this.setState({ users: localUsersData });
+    }
+  }
+
+  getSnapshotBeforeUpdate() {
+    console.log('getSnapshotBeforeUpdate');
+    return 123
+  }
+
+  componentDidUpdate(_, prevState, snapshot) {
+    console.log('componentDidUpdate', snapshot);
+    if (this.state.users !== prevState.users) {
+      localStorage.setItem(
+        LOCAL_STORAGE_USERS_KEY,
+        JSON.stringify(this.state.users)
+      );
+    }
+  }
 
   handleDeleteUser = (userId) => {
     this.setState((prevState) => ({
@@ -21,53 +54,52 @@ export class Users extends Component {
     }));
   };
 
+  handleCreateNewUser = (user) => {
+    this.setState((prevState) => ({
+      users: [{ ...user, id: Date.now() }, ...prevState.users],
+      isModalOpen: false,
+    }));
+  };
+
+  toggleModal = () => {
+    this.setState((prevState) => ({ isModalOpen: !prevState.isModalOpen }));
+  };
+
   handleChangeAvailability = () => {
     this.setState((prevState) => ({
-      filters: {
-        ...prevState.filters,
-        isAvailableChacked: !prevState.filters.isAvailableChacked,
-      },
+      isAvailableChacked: !prevState.isAvailableChacked,
     }));
   };
 
   handleChangeSkills = (event) => {
     const { value } = event.target;
-    this.setState((prevState) => ({
-      filters: {
-        ...prevState.filters,
-        skills: value,
-      },
-    }));
+    this.setState({
+      skills: value,
+    });
   };
 
   handleChangeSearch = (event) => {
     const { value } = event.target;
-    this.setState((prevState) => ({
-      filters: {
-        ...prevState.filters,
-        search: value,
-      },
-    }));
+    this.setState({
+      search: value,
+    });
   };
 
   handleResetSearch = () => {
-    this.setState((prevState) => ({
-      filters: {
-        ...prevState.filters,
-        search: "",
-      },
-    }));
+    this.setState({
+      search: "",
+    });
   };
 
   applyFilters = () => {
-    const { isAvailableChacked, skills, search } = this.state.filters;
+    const { isAvailableChacked, skills, search } = this.state;
     let filteredUsers = this.state.users;
     if (isAvailableChacked) {
       filteredUsers = filteredUsers.filter(
         (user) => user.isOpenToWork === isAvailableChacked
       );
     }
-    if (skills) {
+    if (skills !== ALL_SKILL_VALUE) {
       filteredUsers = filteredUsers.filter((user) =>
         user.skills.includes(skills)
       );
@@ -81,17 +113,46 @@ export class Users extends Component {
   };
 
   render() {
-    const { filters } = this.state;
-    const filteredUsers = this.applyFilters()
+    console.log('render');
+    const { isAvailableChacked, skills, search, isModalOpen } = this.state;
+    const filteredUsers = this.applyFilters();
     return (
       <>
-        <UsersFilters
-          filters={filters}
-          onChangeSkills={this.handleChangeSkills}
-          onChangeAvailability={this.handleChangeAvailability}
-          onChangeSearch={this.handleChangeSearch}
+        <div className="d-flex align-items-center mb-5">
+          <AvailabilityFilter
+            value={isAvailableChacked}
+            onChangeAvailability={this.handleChangeAvailability}
+          />
+
+          <SkillsFilter
+            skillValue={skills}
+            onChangeSkills={this.handleChangeSkills}
+          />
+
+          <button
+            type="button"
+            className="btn btn-primary btn-lg ms-auto"
+            onClick={this.toggleModal}
+          >
+            <FiPlus />
+          </button>
+        </div>
+
+        <SearchInput
+          value={search}
           onResetSearch={this.handleResetSearch}
+          onChangeSearch={this.handleChangeSearch}
         />
+
+        {isModalOpen && (
+          <Modal onModalClose={this.toggleModal}>
+            <NewUserForm
+              onSubmit={this.handleCreateNewUser}
+              onModalClose={this.toggleModal}
+            />
+          </Modal>
+        )}
+
         {filteredUsers.length ? (
           <UsersList
             users={filteredUsers}

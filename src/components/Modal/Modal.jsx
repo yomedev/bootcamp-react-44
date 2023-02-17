@@ -1,37 +1,97 @@
-import { PropTypes } from "prop-types";
+import { Component } from "react";
 
-export const Modal = ({ children, onCloseModal }) => {
-  const handleCloseOnBackdrop = (event) => {
-    if (event.currentTarget === event.target) {
-      onCloseModal();
+const ESC_KEY_VALUE = "Escape";
+
+export class Modal extends Component {
+  componentDidMount() {
+    window.addEventListener("keydown", this.handleCloseOnEscKey);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("keydown", this.handleCloseOnEscKey);
+  }
+
+  handleCloseOnEscKey = (event) => {
+    if (event.key === ESC_KEY_VALUE) {
+      console.log(event);
+      this.props.onModalClose();
     }
   };
 
-  return (
-    <>
-      <div className="modal-backdrop fade show" />
+  handleCloseOnBackdrop = (event) => {
+    if (event.currentTarget === event.target) {
+      this.props.onModalClose();
+    }
+  };
 
-      <div className="modal fade show" style={{ display: "block" }} onClick={handleCloseOnBackdrop}>
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title">Modal title</h5>
-              <button
-                type="button"
-                className="btn-close"
-                aria-label="Close"
-                onClick={onCloseModal}
-              />
+  render() {
+    const { onModalClose, children } = this.props;
+    return (
+      <>
+        <div className="modal-backdrop fade show" />
+
+        <div
+          className="modal fade show"
+          style={{ display: "block" }}
+          onClick={this.handleCloseOnBackdrop}
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Modal title</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  aria-label="Close"
+                  onClick={onModalClose}
+                />
+              </div>
+
+              <div className="modal-body">{children}</div>
             </div>
-
-            <div className="modal-body">{children}</div>
           </div>
         </div>
-      </div>
-    </>
-  );
-};
+      </>
+    );
+  }
+}
 
-Modal.propType = {
-  children: PropTypes.node.isRequired,
-};
+// export const Modal = ({ children, onModalClose }) => {
+//   const handleCloseOnBackdrop = (event) => {
+//     if (event.currentTarget === event.target) {
+//       onModalClose();
+//     }
+//   };
+
+//   return (
+//     <>
+//       <div className="modal-backdrop fade show" />
+
+//       <div
+//         className="modal fade show"
+//         style={{ display: "block" }}
+//         onClick={handleCloseOnBackdrop}
+//       >
+//         <div className="modal-dialog modal-dialog-centered">
+//           <div className="modal-content">
+//             <div className="modal-header">
+//               <h5 className="modal-title">Modal title</h5>
+//               <button
+//                 type="button"
+//                 className="btn-close"
+//                 aria-label="Close"
+//                 onClick={onModalClose}
+//               />
+//             </div>
+
+//             <div className="modal-body">{children}</div>
+//           </div>
+//         </div>
+//       </div>
+//     </>
+//   );
+// };
+
+// Modal.propType = {
+//   children: PropTypes.node.isRequired
+// };

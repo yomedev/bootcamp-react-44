@@ -1,0 +1,50 @@
+import { Component, PureComponent } from "react";
+
+// 1 => 2
+
+class Button extends PureComponent {
+  // shouldComponentUpdate(nextProps) {
+  //   if (nextProps.person.name !== this.props.person.name || nextProps.person.email !== this.props.person.email) {
+  //     return true
+  //   }
+  //   return false
+  // }
+
+  render() {
+    const { label, onClick } = this.props;
+    console.log("Button");
+
+    return (
+      <button className="btn btn-outline-light" type="button" onClick={onClick}>
+        {label}
+      </button>
+    );
+  }
+}
+
+export class Rerender extends Component {
+  state = {
+    counter: 0,
+  };
+
+  handleCount = () => {
+    this.setState((prevState) => ({ counter: prevState.counter + 1 }));
+  };
+
+  render() {
+    const { counter } = this.state;
+    console.log("Rerender");
+
+    return (
+      <div className="d-flex flex-column justify-content-center align-items-center p-5 text-bg-dark rounded-3 mb-5">
+        <h2>{counter}</h2>
+
+        <Button
+          label="Click me!"
+          // person={{ name: "Bob", email: "bob@gmail.com" }}
+          onClick={this.handleCount}
+        />
+      </div>
+    );
+  }
+}

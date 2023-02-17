@@ -1,7 +1,8 @@
 const skills = [
-  { value: "react", lable: "React" },
-  { value: "angular", lable: "Angular" },
-  { value: "vue", lable: "Vue" },
+  { value: 'all', label: 'All' },
+  { value: "react", label: "React" },
+  { value: "angular", label: "Angular" },
+  { value: "vue", label: "Vue" },
 ];
 
 export const SkillsFilter = ({ onChangeSkills, skillValue }) => {
@@ -11,9 +12,9 @@ export const SkillsFilter = ({ onChangeSkills, skillValue }) => {
 
       <div className="d-flex">
         {skills.map((skill) => (
-          <div className="form-check me-4">
+          <div key={skill.value} className="form-check me-4">
             <label className="form-check-label">
-              <span>{skill.lable}</span>
+              <span>{skill.label}</span>
               <input
                 className="form-check-input"
                 checked={skillValue === skill.value}
