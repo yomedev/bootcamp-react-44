@@ -1,18 +1,16 @@
-import React from "react";
-import classNames from "classnames";
-import styles from "./Button.module.css";
+import classNames from 'classnames';
 
-export const Button = ({ children, primary, secondary }) => {
+export const Button = ({ type = 'button', className = 'btn-primary', isLoading, children, ...props }) => {
   return (
-    // <button type="button" className={`${styles.btn} ${primary && styles.primary} ${secondary && styles.secondary}`}>
-    <button
-      type="button"
-      className={classNames(styles.btn, {
-        [styles.primary]: primary,
-        [styles.secondary]: secondary,
-      })}
-    >
-      {children}
+    <button type={type} className={classNames('btn', className)} {...props} disabled={isLoading}>
+      {isLoading ? (
+        <>
+          <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true" />
+          <span class="visually-hidden">Loading...</span>
+        </>
+      ) : (
+        children
+      )}
     </button>
   );
 };
