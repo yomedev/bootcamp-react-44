@@ -1,73 +1,124 @@
-import { Component } from "react";
-import { toast } from "react-toastify";
+import { useEffect, useRef } from "react";
 
 const year = new Date().getFullYear();
 
-export class LoginForm extends Component {
-  state = {
-    email: "test@gmail.com",
-    password: "",
-  };
+export const LoginForm = () => {
+  const inputRef = useRef(null);
+  useEffect(() => {
+    console.log(inputRef.current);
+    inputRef.current.focus();
+  }, []);
+  
 
-  handleChange = (event) => {
-    const { name, value } = event.target;
-    this.setState({ [name]: value });
-  };
+  return (
+    <form
+      className="form-signin d-flex align-items-center justify-content-center mt-5"
+      onSubmit={console.log}
+    >
+      <div className="d-block" style={{ width: 300, height: "max-content" }}>
+        <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
 
-  handleSubmit = (event) => {
-    event.preventDefault();
-    const { email, password } = this.state;
-    toast(`${email} ${password}`);
-    this.setState({ email: "", password: "" });
-  };
-
-  render() {
-    const { email, password } = this.state;
-    console.log("email: ", email);
-    console.log("password: ", password);
-    return (
-      <form
-        className="form-signin d-flex align-items-center justify-content-center mt-5"
-        onSubmit={this.handleSubmit}
-      >
-        <div className="d-block" style={{ width: 300, height: "max-content" }}>
-          <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
-
-          <div className="form-floating">
-            <input
-              value={email}
-              type="email"
-              name="email"
-              className="form-control"
-              id="email"
-              placeholder="name@example.com"
-              onChange={this.handleChange}
+        <div className="form-floating">
+          <input
+            value={"email"}
+            type="email"
+            name="email"
+            className="form-control"
+            id="email"
+            placeholder="name@example.com"
+            onChange={console.log}
+          ref={inputRef}
             />
-            <label htmlFor="email">Email address</label>
-          </div>
-          <div className="form-floating mt-4">
-            <input
-              value={password}
-              name="password"
-              type="password"
-              className="form-control"
-              id="pass"
-              placeholder="Password"
-              onChange={this.handleChange}
-            />
-            <label htmlFor="pass">Password</label>
-          </div>
-
-          <button className="w-100 btn btn-lg btn-primary mt-4" type="submit">
-            Sign in
-          </button>
-
-          <p className="mt-5 mb-3 text-muted">© {year}</p>
+          <label htmlFor="email">Email address</label>
         </div>
-      </form>
-    );
-  }
-}
+        <div className="form-floating mt-4">
+          <input
+            value={"password"}
+            name="password"
+            type="password"
+            className="form-control"
+            id="pass"
+            placeholder="Password"
+            onChange={console.log}
+          />
+          <label htmlFor="pass">Password</label>
+        </div>
+
+        <button className="w-100 btn btn-lg btn-primary mt-4" type="submit">
+          Sign in
+        </button>
+
+        <p className="mt-5 mb-3 text-muted">© {year}</p>
+      </div>
+    </form>
+  );
+};
+
+// export class LoginForm extends Component {
+//   state = {
+//     email: "test@gmail.com",
+//     password: "",
+//   };
+
+//   handleChange = (event) => {
+//     const { name, value } = event.target;
+//     this.setState({ [name]: value });
+//   };
+
+//   handleSubmit = (event) => {
+//     event.preventDefault();
+//     const { email, password } = this.state;
+//     toast(`${email} ${password}`);
+//     this.setState({ email: "", password: "" });
+//   };
+
+//   render() {
+//     const { email, password } = this.state;
+//     console.log("email: ", email);
+//     console.log("password: ", password);
+//     return (
+//       <form
+//         className="form-signin d-flex align-items-center justify-content-center mt-5"
+//         onSubmit={this.handleSubmit}
+//       >
+//         <div className="d-block" style={{ width: 300, height: "max-content" }}>
+//           <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
+
+//           <div className="form-floating">
+//             <input
+//               value={email}
+//               type="email"
+//               name="email"
+//               className="form-control"
+//               id="email"
+//               placeholder="name@example.com"
+//               onChange={this.handleChange}
+//             />
+//             <label htmlFor="email">Email address</label>
+//           </div>
+//           <div className="form-floating mt-4">
+//             <input
+//               value={password}
+//               name="password"
+//               type="password"
+//               className="form-control"
+//               id="pass"
+//               placeholder="Password"
+//               onChange={this.handleChange}
+//             />
+//             <label htmlFor="pass">Password</label>
+//           </div>
+
+//           <button className="w-100 btn btn-lg btn-primary mt-4" type="submit">
+//             Sign in
+//           </button>
+
+//           <p className="mt-5 mb-3 text-muted">© {year}</p>
+//         </div>
+//       </form>
+//     );
+//   }
+// }
 
 // export const LoginForm = () => {
 //   return (

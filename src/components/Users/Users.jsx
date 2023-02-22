@@ -33,13 +33,8 @@ export class Users extends Component {
     }
   }
 
-  getSnapshotBeforeUpdate() {
-    console.log('getSnapshotBeforeUpdate');
-    return 123
-  }
 
-  componentDidUpdate(_, prevState, snapshot) {
-    console.log('componentDidUpdate', snapshot);
+  componentDidUpdate(_, prevState) {
     if (this.state.users !== prevState.users) {
       localStorage.setItem(
         LOCAL_STORAGE_USERS_KEY,
@@ -113,7 +108,6 @@ export class Users extends Component {
   };
 
   render() {
-    console.log('render');
     const { isAvailableChacked, skills, search, isModalOpen } = this.state;
     const filteredUsers = this.applyFilters();
     return (

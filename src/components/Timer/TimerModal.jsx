@@ -1,4 +1,5 @@
 import { Component } from "react";
+import { FaPlay, FaStop } from "react-icons/fa";
 
 const INTERVAL_TIMEOUT_ONE_SECOND = 1000;
 
@@ -7,7 +8,7 @@ export class TimerModal extends Component {
     time: new Date(),
   };
 
-  intervalId = null
+  intervalId = null;
 
   componentDidMount() {
     this.intervalId = setInterval(() => {
@@ -17,7 +18,7 @@ export class TimerModal extends Component {
   }
 
   componentWillUnmount() {
-    console.log('clear interval');
+    console.log("clear interval");
     clearInterval(this.intervalId);
   }
 
@@ -35,6 +36,14 @@ export class TimerModal extends Component {
     return (
       <div className="d-flex flex-column justify-content-center align-items-center p-5 text-bg-dark rounded-3 mb-5">
         <h2 className="h1 m-5">{this.formatTime()}</h2>
+        <div className="d-flex flex-row gap-5">
+          <button className="btn btn-outline-light">
+            <FaPlay />
+          </button>
+          <button className="btn btn-outline-light">
+            <FaStop />
+          </button>
+        </div>
       </div>
     );
   }

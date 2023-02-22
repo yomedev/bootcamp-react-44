@@ -8,7 +8,7 @@ export const getPostsService = async (skip) => {
   const { data } = await axios.get("/posts", {
     params: {
       limit: POSTS_PER_PAGE,
-      skip
+      skip,
     },
   });
 
@@ -21,7 +21,7 @@ export const getPostsByQuery = async (search, page = 1) => {
   const { data } = await axios.get("/posts/search", {
     params: {
       q: search,
-      page
+      page,
     },
   });
 
@@ -29,10 +29,6 @@ export const getPostsByQuery = async (search, page = 1) => {
 
   return { ...data, posts: postsWithImages };
 };
-
-
-
-
 
 const addImagesToPosts = async (posts) => {
   const responses = await Promise.all(
@@ -45,11 +41,27 @@ const addImagesToPosts = async (posts) => {
       })
     )
   );
-  const postsImages = responses.map((res) => res.data.hits[0].webformatURL);
 
-  return posts.map((post, index) => ({
-    ...post,
-    preview_image: postsImages[index],
-    created_at: new Date(),
-  }));
+  const duplicatedTags = new Set(posts.map((post) => post.tags[0]));
+
+  console.log(duplicatedTags);
+  const postsImages = responses.map((res) => res.data.hits);
+  const skipImages = {};
+  return posts.map((post, index) => {
+    const firstPostTag = post.tags[0]
+    if (!skipImages[firstPostTag]) {
+
+      skipImages[firstPostTag] = 0;
+    }
+    console.log(firstPostTag);
+    if (duplicatedTags.has(firstPostTag)) {
+      skipImages[firstPostTag] += 1;
+    }
+    const imageIndex = skipImages[firstPostTag]
+    return {
+      ...post,
+      preview_image: postsImages[index][imageIndex].webformatURL,
+      created_at: new Date(),
+    };
+  });
 };
