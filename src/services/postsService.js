@@ -2,13 +2,20 @@ import axios from "axios";
 
 const POSTS_PER_PAGE = 9;
 
-axios.defaults.baseURL = "https://dummyjson.com";
+const postsApi = axios.create({
+  baseURL: "https://dummyjson.com/",
+  params: {
+    limit: POSTS_PER_PAGE,
+  },
+});
 
-export const getPostsService = async (skip) => {
-  const { data } = await axios.get("/posts", {
+export const getPostsService = async ({ search = "", page = 1 }) => {
+  const endpoint = search ? "posts/search" : "posts";
+  const skip = (page - 1) * POSTS_PER_PAGE;
+  const { data } = await postsApi.get(endpoint, {
     params: {
-      limit: POSTS_PER_PAGE,
-      skip,
+      q: search || undefined,
+      skip: skip || undefined,
     },
   });
 
@@ -17,47 +24,40 @@ export const getPostsService = async (skip) => {
   return { ...data, posts: postsWithImages };
 };
 
-export const getPostsByQuery = async (search, page = 1) => {
-  const { data } = await axios.get("/posts/search", {
-    params: {
-      q: search,
-      page,
-    },
-  });
+const imagesApi = axios.create({
+  baseURL: "https://pixabay.com/api/",
+  params: {
+    key: "29943402-7b214b60182b7d41669576685",
+  },
+});
 
-  const postsWithImages = await addImagesToPosts(data.posts);
-
-  return { ...data, posts: postsWithImages };
-};
-
+const duplicatedImagesCounter = new Map();
 const addImagesToPosts = async (posts) => {
+
   const responses = await Promise.all(
     posts.map(({ tags }) =>
-      axios.get("https://pixabay.com/api/", {
+      imagesApi.get("", {
         params: {
-          key: "29943402-7b214b60182b7d41669576685",
           q: tags[0],
         },
       })
     )
   );
 
-  const duplicatedTags = new Set(posts.map((post) => post.tags[0]));
-
-  console.log(duplicatedTags);
   const postsImages = responses.map((res) => res.data.hits);
-  const skipImages = {};
-  return posts.map((post, index) => {
-    const firstPostTag = post.tags[0]
-    if (!skipImages[firstPostTag]) {
 
-      skipImages[firstPostTag] = 0;
+  return posts.map((post, index) => {
+    const firstPostTag = post.tags[0];
+
+    if (!duplicatedImagesCounter.has(firstPostTag)) {
+      duplicatedImagesCounter.set(firstPostTag, 0);
+    } else {
+      const prevValue = duplicatedImagesCounter.get(firstPostTag);
+      duplicatedImagesCounter.set(firstPostTag, prevValue + 1);
     }
-    console.log(firstPostTag);
-    if (duplicatedTags.has(firstPostTag)) {
-      skipImages[firstPostTag] += 1;
-    }
-    const imageIndex = skipImages[firstPostTag]
+
+    const imageIndex = duplicatedImagesCounter.get(firstPostTag);
+
     return {
       ...post,
       preview_image: postsImages[index][imageIndex].webformatURL,

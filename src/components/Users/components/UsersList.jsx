@@ -1,34 +1,46 @@
-import React, { Component } from "react";
+import React, { useMemo } from "react";
 import { UsersItem } from "./UsersItem";
 
-export class UsersList extends Component {
-  
+export const UsersList = ({ users, onDeleteUser }) => {
+  const getOpenToWorkTotal = useMemo(() => {
+    console.log('reduce')
+    return users.reduce((acc, user) => (user.isOpenToWork ? acc + 1 : acc), 0);
+  }, [users]);
 
-  getOpenToWorkTotal = () => {
-    return this.props.users.reduce(
-      (acc, user) => (user.isOpenToWork ? acc + 1 : acc),
-      0
-    );
-  };
+  return (
+    <>
+      <p>Open to work: {getOpenToWorkTotal}</p>
+      <ul className="mb-5" style={{ listStyle: "none" }}>
+        {users.map((user) => (
+          <UsersItem onDeleteUser={onDeleteUser} key={user.id} user={user} />
+        ))}
+      </ul>
+    </>
+  );
+};
 
-  render() {
-    const { users, onDeleteUser } = this.props;
-    return (
-      <>
-        <p>Open to work: {this.getOpenToWorkTotal()}</p>
-        <ul className="mb-5" style={{ listStyle: "none" }}>
-          {users.map((user) => (
-            <UsersItem
-              onDeleteUser={onDeleteUser}
-              key={user.id}
-              user={user}
-            />
-          ))}
-        </ul>
-      </>
-    );
-  }
-}
+// export class UsersList extends Component {
+//   getOpenToWorkTotal = () => {
+//     return this.props.users.reduce(
+//       (acc, user) => (user.isOpenToWork ? acc + 1 : acc),
+//       0
+//     );
+//   };
+
+//   render() {
+//     const { users, onDeleteUser } = this.props;
+//     return (
+//       <>
+//         <p>Open to work: {this.getOpenToWorkTotal()}</p>
+//         <ul className="mb-5" style={{ listStyle: "none" }}>
+//           {users.map((user) => (
+//             <UsersItem onDeleteUser={onDeleteUser} key={user.id} user={user} />
+//           ))}
+//         </ul>
+//       </>
+//     );
+//   }
+// }
 
 // export const UsersList = ({ users }) => {
 //   return (

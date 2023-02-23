@@ -1,45 +1,61 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const year = new Date().getFullYear();
 
+const formInitialState = {
+  email: "",
+  password: "",
+};
+
 export const LoginForm = () => {
+  const [form, setForm] = useState(formInitialState);
+
   const inputRef = useRef(null);
+
   useEffect(() => {
-    console.log(inputRef.current);
     inputRef.current.focus();
   }, []);
-  
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    console.log(form);
+  }
 
   return (
     <form
       className="form-signin d-flex align-items-center justify-content-center mt-5"
-      onSubmit={console.log}
+      onSubmit={handleSubmit}
     >
       <div className="d-block" style={{ width: 300, height: "max-content" }}>
         <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
 
         <div className="form-floating">
           <input
-            value={"email"}
+            value={form.email}
             type="email"
             name="email"
             className="form-control"
             id="email"
             placeholder="name@example.com"
-            onChange={console.log}
-          ref={inputRef}
-            />
+            onChange={handleChange}
+            ref={inputRef}
+          />
           <label htmlFor="email">Email address</label>
         </div>
         <div className="form-floating mt-4">
           <input
-            value={"password"}
+            value={form.password}
             name="password"
             type="password"
             className="form-control"
             id="pass"
             placeholder="Password"
-            onChange={console.log}
+            onChange={handleChange}
           />
           <label htmlFor="pass">Password</label>
         </div>

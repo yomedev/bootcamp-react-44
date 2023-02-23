@@ -1,6 +1,9 @@
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 
 const ESC_KEY_VALUE = "Escape";
+
+const modalRoot = document.getElementById('modal-root')
 
 export const Modal = ({ onModalClose, children }) => {
   useEffect(() => {
@@ -22,7 +25,7 @@ export const Modal = ({ onModalClose, children }) => {
     }
   };
 
-  return (
+  const jsx = (
     <>
       <div className="modal-backdrop fade show" />
 
@@ -49,6 +52,8 @@ export const Modal = ({ onModalClose, children }) => {
       </div>
     </>
   );
+
+  return createPortal(jsx, modalRoot)
 };
 
 // export class Modal extends Component {
