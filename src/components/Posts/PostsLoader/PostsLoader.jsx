@@ -1,4 +1,4 @@
-import { Skeleton } from '../Skeleton/Skeleton';
+import { Skeleton } from "../../Skeleton/Skeleton";
 
 export const PostsLoader = ({ amount = 9 }) => {
   return (
@@ -7,11 +7,11 @@ export const PostsLoader = ({ amount = 9 }) => {
         {[...Array(amount)].map((_, i) => (
           <div key={i} className="col-12 col-xl-6 col-xxl-4 mb-4">
             <div className="card">
-              <Skeleton style={{ height: '250px' }} />
+              <Skeleton style={{ height: "250px" }} />
 
               <div className="card-body">
                 <h5 className="card-title mb-4">
-                  <Skeleton style={{ height: '12px' }} />
+                  <Skeleton style={{ height: "12px" }} />
                 </h5>
 
                 <div className="card-text">

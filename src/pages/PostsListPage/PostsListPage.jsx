@@ -1,12 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-
-import { Button } from "../Button";
-
-import { PostsItem } from "./PostsItem/PostsItem";
-import { PostsSearch } from "./PostsSearch/PostsSearch";
-import { PostsLoader } from "./PostsLoader/PostsLoader";
 import { getPostsService } from "../../services/postsService";
+import { Button } from "../../components/Button";
+import { PostsItem, PostsLoader, PostsSearch } from "../../components/Posts";
 
 const fetchStatus = {
   Idle: "idle",
@@ -15,14 +11,13 @@ const fetchStatus = {
   Error: "error",
 };
 
-export const Posts = () => {
+export const PostsListPage = () => {
   const [status, setStatus] = useState(fetchStatus.Idle);
   const [posts, setPosts] = useState(null);
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
 
-  const searchParams = useSearchParams()
-  console.log(searchParams);
+  const [searchParams] = useSearchParams();
+  const search = searchParams.get("search");
 
   const listRef = useRef(null);
   const scrollIndexRef = useRef(null);
@@ -57,7 +52,7 @@ export const Posts = () => {
   };
 
   const handleChangeSearch = (value) => {
-    setSearch(value);
+    // setSearch(value);
     setPage(1);
   };
 
@@ -93,4 +88,3 @@ export const Posts = () => {
     </>
   );
 };
-

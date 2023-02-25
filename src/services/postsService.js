@@ -24,6 +24,11 @@ export const getPostsService = async ({ search = "", page = 1 }) => {
   return { ...data, posts: postsWithImages };
 };
 
+export const createNewPostService = async (body) => {
+  const {data} = await postsApi.post('/posts/add', body, { params: {limit: undefined}})
+  return data
+}
+
 const imagesApi = axios.create({
   baseURL: "https://pixabay.com/api/",
   params: {
@@ -32,6 +37,22 @@ const imagesApi = axios.create({
 });
 
 const duplicatedImagesCounter = new Map();
+
+export const getSinglePostService = async (id) => {
+  const { data } = await postsApi.get(`posts/${id}`);
+  const postWithImage = await imagesApi.get("", {
+    params: {
+      q: data.tags[0],
+    },
+  })
+  return {
+    ...data,
+    image: postWithImage.data.hits[0].largeImageURL,
+    created_at: new Date(),
+  };
+};
+
+
 const addImagesToPosts = async (posts) => {
 
   const responses = await Promise.all(

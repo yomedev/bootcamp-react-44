@@ -11,7 +11,7 @@ const getLocalData = (key, defaultValue) => {
   );
 };
 
-export const Counter = ({ defaultLikes }) => {
+export const CounterPage = ({ defaultLikes }) => {
   const [likes, setLikes] = useState(() => getLocalData("likes", defaultLikes));
   const [dislikes, setDislikes] = useState(() => getLocalData("dislikes", 0));
 

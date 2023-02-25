@@ -1,27 +1,42 @@
-import { ToastContainer } from "react-toastify";
-// import { Counter } from "./components/Counter/Counter";
-import { Header, Layout } from "./components/Layout";
-// import { Memo } from "./components/Memo/Memo";
-import { Posts } from "./components/Posts/Posts";
-import { AuthProvider } from "./context/AuthContext";
-// import { Users } from "./components/Users/Users";
-import { Rerender } from "./components/Rerender/Rerender";
-// import { LoginForm } from "./components/LoginForm/LoginForm";
-// import { Timer } from "./components/Timer/Timer";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Layout } from "./components/Layout";
+import { ExercisesPage } from "./pages/ExercisesPage/ExercisesPage";
+import { RerenderPage } from "./pages/ExercisesPage/RerenderPage/RerenderPage";
+import { TimerPage } from "./pages/ExercisesPage/TimerPage/TimerPage";
+import { CounterPage } from "./pages/ExercisesPage/CounterPage/CounterPage";
+
+import HomePage from "./pages/HomePage";
+import { NewPostPage } from "./pages/NewPostPage/NewPostPage";
+import { PostsListPage } from "./pages/PostsListPage/PostsListPage";
+import { SinglePostPage } from "./pages/SinglePostPage/SinglePostPage";
+import { NotFoundPage } from "./pages/NotFoundPage/NotFoundPage";
+
+// domen/users/posts
+
+// posts
 
 export const App = () => {
   return (
-    <AuthProvider>
-      <Layout>
-        <Header title="Hello world!" />
-        <Rerender />
-        {/* <Users /> */}
-        {/* <Memo /> */}
-        <Posts />
-        <ToastContainer />
-      </Layout>
-    </AuthProvider>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<HomePage />} />
+          <Route path="posts" element={<PostsListPage />} />
+          <Route path="posts/:postId" element={<SinglePostPage />} />
+          <Route path="new-post" element={<NewPostPage />} />
+          <Route path="exercises" element={<ExercisesPage />}>
+            <Route index element={<Navigate to="timer" />} />
+            <Route path="timer" element={<TimerPage />} />
+            <Route path="counter" element={<CounterPage />} />
+            <Route path="re-render" element={<RerenderPage />} />
+          </Route>
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 };
 
-// new Users()
+<ExercisesPage>
+  <CounterPage />
+</ExercisesPage>;
