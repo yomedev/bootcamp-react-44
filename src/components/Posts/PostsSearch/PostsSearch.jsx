@@ -8,7 +8,7 @@ import React from "react";
 
 export const PostsSearch = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const searchParamValue = searchParams.get('search') ?? ''
+  const searchParamValue = searchParams.get("search") ?? "";
   const [search, setSearch] = useState(searchParamValue);
 
   const handleChangeSearch = (event) => {
@@ -17,7 +17,7 @@ export const PostsSearch = () => {
   };
 
   const handleSubmit = () => {
-    setSearchParams({ search });
+    setSearchParams({ search, page: 1 });
   };
 
   return (

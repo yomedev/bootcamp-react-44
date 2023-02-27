@@ -6,3 +6,8 @@ const commentsApi = axios.create({
     limit: 3
   }
 })
+
+export const getComments = async (postId) => {
+  const {data} = await commentsApi.get('comments/post/'+ postId)
+  return data
+}

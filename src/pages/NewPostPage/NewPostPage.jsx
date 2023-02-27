@@ -27,15 +27,10 @@ export const NewPostPage = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    // const isEmpty = Object.values(form).some(item => !item);
-    // if (isEmpty) {
-    //   toast.error('Fill all required fields!');
-    //   return;
-    // }
-
     setIsLoading(true);
     createNewPostService(form)
       .then((post) => {
+        console.log(post);
         navigate("/posts", { replace: true });
         toast.success("You have successfully created a new post!");
       })
@@ -76,52 +71,6 @@ export const NewPostPage = () => {
               placeholder="Post content"
             />
           </label>
-        </div>
-
-        <div className="mb-3">
-          <label className="d-block form-label">
-            <p>Preview image url (small image)</p>
-            <input
-              type="text"
-              name="preview_image"
-              value={form.preview_image}
-              onChange={handleChange}
-              className="form-control"
-              placeholder="https://example.com/samll_image.jpeg"
-            />
-          </label>
-
-          {form.image && (
-            <img
-              src={form.preview_image}
-              className="img-thumbnail"
-              alt=""
-              style={{ height: "200px" }}
-            />
-          )}
-        </div>
-
-        <div className="mb-3">
-          <label className="d-block form-label">
-            <p>Post image url (large image)</p>
-            <input
-              type="text"
-              name="image"
-              value={form.image}
-              onChange={handleChange}
-              className="form-control"
-              placeholder="https://example.com/large_image.jpeg"
-            />
-          </label>
-
-          {form.image && (
-            <img
-              src={form.image}
-              className="img-thumbnail"
-              alt=""
-              style={{ height: "200px" }}
-            />
-          )}
         </div>
 
         <div className="d-flex mt-5">

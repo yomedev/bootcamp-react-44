@@ -25,7 +25,7 @@ export const getPostsService = async ({ search = "", page = 1 }) => {
 };
 
 export const createNewPostService = async (body) => {
-  const {data} = await postsApi.post('/posts/add', body, { params: {limit: undefined}})
+  const {data} = await postsApi.post('/posts/add', body)
   return data
 }
 

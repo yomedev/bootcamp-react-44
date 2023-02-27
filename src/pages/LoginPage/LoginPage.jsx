@@ -1,4 +1,7 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useAuth } from "../../context/AuthContext";
 
 const year = new Date().getFullYear();
 
@@ -7,8 +10,10 @@ const formInitialState = {
   password: "",
 };
 
-export const LoginForm = () => {
+export const LoginPage = () => {
   const [form, setForm] = useState(formInitialState);
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const inputRef = useRef(null);
 
@@ -22,9 +27,12 @@ export const LoginForm = () => {
   };
 
   const handleSubmit = (event) => {
-    event.preventDefault()
+    event.preventDefault();
     console.log(form);
-  }
+    login(form.email, form.password)
+      .then(() => navigate("/posts", { replace: true }))
+      .catch(() => toast.error("Incorect password"));
+  };
 
   return (
     <form
@@ -69,5 +77,3 @@ export const LoginForm = () => {
     </form>
   );
 };
-
-

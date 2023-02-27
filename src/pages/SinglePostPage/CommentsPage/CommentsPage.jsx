@@ -1,13 +1,14 @@
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
-import { CommentForm } from '../../../CommentForm';
-import { CommentList } from '../../../CommentList';
+import { CommentList } from '../../../components/CommentList';
 
 export const CommentsPage = () => {
   const [comments, setComments] = useState(null);
+  const location = useLocation()
+  console.log(location);
   return (
     <>
-      <CommentForm setComments={setComments} />
       <CommentList comments={comments} setComments={setComments} />
     </>
   );

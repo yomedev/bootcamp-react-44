@@ -21,7 +21,7 @@ export const Posts = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
 
-  const searchParams = useSearchParams()
+  const searchParams = useSearchParams();
   console.log(searchParams);
 
   const listRef = useRef(null);
@@ -56,6 +56,10 @@ export const Posts = () => {
     setPage((prev) => prev + 1);
   };
 
+  const handleChangePage = (page) => {
+    return () => setPage(page)
+  }
+
   const handleChangeSearch = (value) => {
     setSearch(value);
     setPage(1);
@@ -87,10 +91,13 @@ export const Posts = () => {
 
       <div className="pagination">
         <div className="btn-group my-2 mx-auto btn-group-lg">
-          <Button onClick={handleLoadMore}>Load more</Button>
+          {[...Array(Math.ceil(posts.total / posts.limit))].map((_, index) => (
+            <Button className="btn-primary page-item" onClick={handleLoadMore(index + 1)}>
+              {index + 1}
+            </Button>
+          ))}
         </div>
       </div>
     </>
   );
 };
-

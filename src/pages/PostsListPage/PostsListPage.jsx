@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { getPostsService } from "../../services/postsService";
 import { Button } from "../../components/Button";
 import { PostsItem, PostsLoader, PostsSearch } from "../../components/Posts";
+import { toast } from "react-toastify";
 
 const fetchStatus = {
   Idle: "idle",
@@ -14,10 +15,19 @@ const fetchStatus = {
 export const PostsListPage = () => {
   const [status, setStatus] = useState(fetchStatus.Idle);
   const [posts, setPosts] = useState(null);
-  const [page, setPage] = useState(1);
+  // const [page, setPage] = useState(1);
+  const location = useLocation();
+  const isRegister = location.state?.isRegister ?? false;
 
-  const [searchParams] = useSearchParams();
-  const search = searchParams.get("search");
+  useEffect(() => {
+    if (isRegister) {
+      toast.info("Welcome");
+    }
+  }, [isRegister]);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const search = searchParams.get("search") ?? "";
+  const page = searchParams.get("page") ?? 1;
 
   const listRef = useRef(null);
   const scrollIndexRef = useRef(null);
@@ -26,10 +36,7 @@ export const PostsListPage = () => {
     try {
       setStatus(fetchStatus.Loading);
       const resPosts = await getPostsService({ page, search });
-      setPosts((prev) => ({
-        ...resPosts,
-        posts: page === 1 ? resPosts.posts : [...prev.posts, ...resPosts.posts],
-      }));
+      setPosts(resPosts);
       setStatus(fetchStatus.Success);
     } catch {
       setStatus(fetchStatus.Error);
@@ -47,15 +54,6 @@ export const PostsListPage = () => {
     });
   }, [posts?.posts]);
 
-  const handleLoadMore = () => {
-    setPage((prev) => prev + 1);
-  };
-
-  const handleChangeSearch = (value) => {
-    // setSearch(value);
-    setPage(1);
-  };
-
   if (status === fetchStatus.Loading || status === fetchStatus.Idle) {
     return <PostsLoader />;
   }
@@ -70,7 +68,7 @@ export const PostsListPage = () => {
 
   return (
     <>
-      <PostsSearch onSubmitSearch={handleChangeSearch} />
+      <PostsSearch />
 
       <div className="container-fluid g-0 pb-5 mb-5">
         <div ref={listRef} className="row">
@@ -82,7 +80,16 @@ export const PostsListPage = () => {
 
       <div className="pagination">
         <div className="btn-group my-2 mx-auto btn-group-lg">
-          <Button onClick={handleLoadMore}>Load more</Button>
+          {[...Array(10)].map((_, index) => (
+            <Button
+              key={index}
+              disabled={page === index + 1}
+              className="btn-primary page-item"
+              onClick={() => setSearchParams({ page: index + 1, search })}
+            >
+              {index + 1}
+            </Button>
+          ))}
         </div>
       </div>
     </>

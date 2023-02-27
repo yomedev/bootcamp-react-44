@@ -1,4 +1,5 @@
 import { PropTypes } from "prop-types";
+import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { AuthProvider } from "../../context/AuthContext";
@@ -15,7 +16,7 @@ export const Layout = () => {
           className="tab-content p-5 h-100 col-10"
           style={{ minHeight: "100vh" }}
         >
-          <div className="tab-pane fade show active"><Outlet /></div>
+          <div className="tab-pane fade show active"><Suspense fallback={<p>Loading...</p>}><Outlet /></Suspense></div>
         </main>
         <ToastContainer />
       </div>

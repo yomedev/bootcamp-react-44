@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, Outlet, useLocation, useParams } from "react-router-dom";
 
 import { toast } from "react-toastify";
 import { getSinglePostService } from "../../services/postsService";
@@ -9,6 +9,9 @@ export const SinglePostPage = () => {
   const { postId } = useParams();
   const [post, setPost] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const location = useLocation();
+
+  const backLocation = location.state?.from ?? "/posts"; // location.state && location.state.from
 
   useEffect(() => {
     setIsLoading(true);
@@ -28,6 +31,9 @@ export const SinglePostPage = () => {
   return (
     post && (
       <>
+        <Link to={backLocation} className="mb-5 btn btn-primary">
+          Back
+        </Link>
         <img
           src={post.image}
           alt={post.title}
@@ -38,9 +44,10 @@ export const SinglePostPage = () => {
 
         <div>{post.body}</div>
 
-        <a href={`/posts/${postId}/comments`} className="btn btn-primary my-4">
+        <Link state={location.state ?? '/posts'} to={`/posts/${postId}/comments`} className="btn btn-primary my-4">
           Vew post comments
-        </a>
+        </Link>
+        <Outlet />
       </>
     )
   );

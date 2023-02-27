@@ -7,13 +7,14 @@ export const AuthProvider = ({ children }) => {
   const [isAuth, setIsAuth] = useState(true);
   const [username, setUsername] = useState("");
 
-  const login = (username, password) => {
+  const login = async (username, password) => {
     if (password === "123") {
       setIsAuth(true);
       setUsername(username);
       return;
     }
-    toast.error("Incorect password");
+    console.log('Error');
+    throw new Error('Incorect password')
   };
 
   const logout = () => {
