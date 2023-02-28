@@ -1,7 +1,16 @@
-import { useEffect, useRef, useState } from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
+
+const schema = yup
+  .object({
+    email: yup.string().required().min(5),
+    password: yup.string().required().min(8),
+  })
+  .required();
 
 const year = new Date().getFullYear();
 
@@ -11,25 +20,24 @@ const formInitialState = {
 };
 
 export const LoginPage = () => {
-  const [form, setForm] = useState(formInitialState);
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const inputRef = useRef(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    mode: "all",
+    defaultValues: formInitialState,
+    resolver: yupResolver(schema),
+  });
 
-  useEffect(() => {
-    inputRef.current.focus();
-  }, []);
+  console.log(errors);
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log(form);
-    login(form.email, form.password)
+  const onSubmit = (data) => {
+    console.log(data);
+    login(data.email, data.password)
       .then(() => navigate("/posts", { replace: true }))
       .catch(() => toast.error("Incorect password"));
   };
@@ -37,34 +45,39 @@ export const LoginPage = () => {
   return (
     <form
       className="form-signin d-flex align-items-center justify-content-center mt-5"
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
     >
       <div className="d-block" style={{ width: 300, height: "max-content" }}>
         <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
 
         <div className="form-floating">
           <input
-            value={form.email}
+            // {...register("email", {
+            //   required: { value: true, message: "Email is required" },
+            //   minLength: {
+            //     value: 5,
+            //     message: "Email needs to be at least 5 characters",
+            //   },
+            // })}
+            {...register("email")}
             type="email"
-            name="email"
             className="form-control"
             id="email"
             placeholder="name@example.com"
-            onChange={handleChange}
-            ref={inputRef}
+            // ref={inputRef}
           />
+          <p style={{ color: "red" }}>{errors.email?.message}</p>
           <label htmlFor="email">Email address</label>
         </div>
         <div className="form-floating mt-4">
           <input
-            value={form.password}
-            name="password"
+            {...register("password")}
             type="password"
             className="form-control"
             id="pass"
             placeholder="Password"
-            onChange={handleChange}
           />
+          <p style={{ color: "red" }}>{errors.password?.message}</p>
           <label htmlFor="pass">Password</label>
         </div>
 

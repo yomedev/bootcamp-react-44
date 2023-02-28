@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useReducer, useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import { UsersList } from "./components/UsersList";
 import usersJson from "../../data/users.json";
@@ -17,9 +17,37 @@ const getLocalData = () => {
   return JSON.parse(localStorage.getItem(LOCAL_STORAGE_USERS_KEY));
 };
 
+const usersReducer = (state, action) => {
+  switch (action.type) {
+    case "toggleModal":
+      return { ...state, isModalOpen: !state.isModalOpen };
+    case "deleteUser":
+      return {
+        ...state,
+        users: state.users.filter((user) => user.id !== action.payload),
+      };
+    case "createNewUser":
+      return { ...state, users: [action.payload, ...state.users] };
+    default:
+      throw new Error("Action doesn't exist");
+  }
+};
+
+const initialState = {
+  users: getLocalData() ?? usersJson,
+  isModalOpen: false,
+  isAvailableChecked: false,
+  skills: ALL_SKILL_VALUE,
+  search: "",
+};
+
 export const Users = () => {
-  const [users, setUsers] = useState(() => getLocalData() ?? usersJson);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [state, dispatch] = useReducer(usersReducer, initialState);
+  const { users, isModalOpen } = state;
+
+  console.log(state);
+
+  // const [users, setUsers] = useState(() => getLocalData() ?? usersJson);
   const [isAvailableChecked, setIsAvailableChecked] = useState(false);
   const [skills, setSkills] = useState(ALL_SKILL_VALUE);
   const [search, setSearch] = useState("");
@@ -29,16 +57,18 @@ export const Users = () => {
   }, [users]);
 
   const handleDeleteUser = (userId) => {
-    setUsers((prev) => prev.filter((user) => user.id !== userId));
+    // setUsers((prev) => prev.filter((user) => user.id !== userId));
+    dispatch({ type: "deleteUser", payload: userId });
   };
 
   const handleCreateNewUser = (user) => {
-    setUsers((prev) => [{ ...user, id: Date.now() }, ...prev]);
-    setIsModalOpen(false);
+    // setUsers((prev) => [{ ...user, id: Date.now() }, ...prev]);
+    dispatch({ type: "createNewUser", payload: { ...user, id: Date.now() } });
+    dispatch({ type: "toggleModal" });
   };
 
   const toggleModal = () => {
-    setIsModalOpen((prev) => !prev);
+    dispatch({ type: "toggleModal" });
   };
 
   const handleChangeAvailability = () => {
@@ -122,148 +152,3 @@ export const Users = () => {
     </>
   );
 };
-
-// export class Users extends Component {
-//   state = {
-//     users: usersJson,
-//     isModalOpen: false,
-//     isAvailableChacked: false,
-//     skills: ALL_SKILL_VALUE,
-//     search: "",
-//   };
-
-//   componentDidMount() {
-//     const localUsersData = JSON.parse(
-//       localStorage.getItem(LOCAL_STORAGE_USERS_KEY)
-//     );
-
-//     if (localUsersData && localUsersData.length) {
-//       this.setState({ users: localUsersData });
-//     }
-//   }
-
-//   componentDidUpdate(_, prevState) {
-//     if (this.state.users !== prevState.users) {
-//       localStorage.setItem(
-//         LOCAL_STORAGE_USERS_KEY,
-//         JSON.stringify(this.state.users)
-//       );
-//     }
-//   }
-
-//   handleDeleteUser = (userId) => {
-//     this.setState((prevState) => ({
-//       users: prevState.users.filter((user) => user.id !== userId),
-//     }));
-//   };
-
-//   handleCreateNewUser = (user) => {
-//     this.setState((prevState) => ({
-//       users: [{ ...user, id: Date.now() }, ...prevState.users],
-//       isModalOpen: false,
-//     }));
-//   };
-
-//   toggleModal = () => {
-//     this.setState((prevState) => ({ isModalOpen: !prevState.isModalOpen }));
-//   };
-
-//   handleChangeAvailability = () => {
-//     this.setState((prevState) => ({
-//       isAvailableChacked: !prevState.isAvailableChacked,
-//     }));
-//   };
-
-//   handleChangeSkills = (event) => {
-//     const { value } = event.target;
-//     this.setState({
-//       skills: value,
-//     });
-//   };
-
-//   handleChangeSearch = (event) => {
-//     const { value } = event.target;
-//     this.setState({
-//       search: value,
-//     });
-//   };
-
-//   handleResetSearch = () => {
-//     this.setState({
-//       search: "",
-//     });
-//   };
-
-//   applyFilters = () => {
-//     const { isAvailableChacked, skills, search } = this.state;
-//     let filteredUsers = this.state.users;
-//     if (isAvailableChacked) {
-//       filteredUsers = filteredUsers.filter(
-//         (user) => user.isOpenToWork === isAvailableChacked
-//       );
-//     }
-//     if (skills !== ALL_SKILL_VALUE) {
-//       filteredUsers = filteredUsers.filter((user) =>
-//         user.skills.includes(skills)
-//       );
-//     }
-//     if (search) {
-//       filteredUsers = filteredUsers.filter((user) =>
-//         user.name.toLowerCase().includes(search.toLowerCase())
-//       );
-//     }
-//     return filteredUsers;
-//   };
-
-//   render() {
-//     const { isAvailableChacked, skills, search, isModalOpen } = this.state;
-//     const filteredUsers = this.applyFilters();
-//     return (
-//       <>
-//         <div className="d-flex align-items-center mb-5">
-//           <AvailabilityFilter
-//             value={isAvailableChacked}
-//             onChangeAvailability={this.handleChangeAvailability}
-//           />
-
-//           <SkillsFilter
-//             skillValue={skills}
-//             onChangeSkills={this.handleChangeSkills}
-//           />
-
-//           <button
-//             type="button"
-//             className="btn btn-primary btn-lg ms-auto"
-//             onClick={this.toggleModal}
-//           >
-//             <FiPlus />
-//           </button>
-//         </div>
-
-//         <SearchInput
-//           value={search}
-//           onResetSearch={this.handleResetSearch}
-//           onChangeSearch={this.handleChangeSearch}
-//         />
-
-//         {isModalOpen && (
-//           <Modal onModalClose={this.toggleModal}>
-//             <NewUserForm
-//               onSubmit={this.handleCreateNewUser}
-//               onModalClose={this.toggleModal}
-//             />
-//           </Modal>
-//         )}
-
-//         {filteredUsers.length ? (
-//           <UsersList
-//             users={filteredUsers}
-//             onDeleteUser={this.handleDeleteUser}
-//           />
-//         ) : (
-//           <NotFound />
-//         )}
-//       </>
-//     );
-//   }
-// }

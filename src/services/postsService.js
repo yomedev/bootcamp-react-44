@@ -25,9 +25,9 @@ export const getPostsService = async ({ search = "", page = 1 }) => {
 };
 
 export const createNewPostService = async (body) => {
-  const {data} = await postsApi.post('/posts/add', body)
-  return data
-}
+  const { data } = await postsApi.post("/posts/add", body);
+  return data;
+};
 
 const imagesApi = axios.create({
   baseURL: "https://pixabay.com/api/",
@@ -44,7 +44,7 @@ export const getSinglePostService = async (id) => {
     params: {
       q: data.tags[0],
     },
-  })
+  });
   return {
     ...data,
     image: postWithImage.data.hits[0].largeImageURL,
@@ -52,9 +52,7 @@ export const getSinglePostService = async (id) => {
   };
 };
 
-
 const addImagesToPosts = async (posts) => {
-
   const responses = await Promise.all(
     posts.map(({ tags }) =>
       imagesApi.get("", {

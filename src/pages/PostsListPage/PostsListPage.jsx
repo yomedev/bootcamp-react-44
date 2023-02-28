@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import { useQuery } from "react-query";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { getPostsService } from "../../services/postsService";
 import { Button } from "../../components/Button";
 import { PostsItem, PostsLoader, PostsSearch } from "../../components/Posts";
 import { toast } from "react-toastify";
+import { useFetch } from "../../hooks/useFetch";
 
 const fetchStatus = {
   Idle: "idle",
@@ -13,9 +15,6 @@ const fetchStatus = {
 };
 
 export const PostsListPage = () => {
-  const [status, setStatus] = useState(fetchStatus.Idle);
-  const [posts, setPosts] = useState(null);
-  // const [page, setPage] = useState(1);
   const location = useLocation();
   const isRegister = location.state?.isRegister ?? false;
 
@@ -29,24 +28,25 @@ export const PostsListPage = () => {
   const search = searchParams.get("search") ?? "";
   const page = searchParams.get("page") ?? 1;
 
+  // const {data: posts, isLoading, isError } = useFetch(getPostsService, page, search)
+
+  const {
+    data: posts,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["posts", search, page],
+    queryFn: () => getPostsService({ search, page }),
+    // enabled: search !== "",
+    select: (data) => data
+  });
+
   const listRef = useRef(null);
   const scrollIndexRef = useRef(null);
 
-  const fetchPosts = useCallback(async () => {
-    try {
-      setStatus(fetchStatus.Loading);
-      const resPosts = await getPostsService({ page, search });
-      setPosts(resPosts);
-      setStatus(fetchStatus.Success);
-    } catch {
-      setStatus(fetchStatus.Error);
-    }
-  }, [page, search]);
-
   useEffect(() => {
-    fetchPosts();
     scrollIndexRef.current = listRef.current?.children?.length;
-  }, [page, search, fetchPosts]);
+  }, [page]);
 
   useEffect(() => {
     listRef.current?.children[scrollIndexRef.current]?.scrollIntoView({
@@ -54,29 +54,29 @@ export const PostsListPage = () => {
     });
   }, [posts?.posts]);
 
-  if (status === fetchStatus.Loading || status === fetchStatus.Idle) {
+  if (isLoading) {
     return <PostsLoader />;
   }
 
-  if (status === fetchStatus.Error) {
+  if (isError) {
     return <p>Something went wrong</p>;
-  }
-
-  if (!posts) {
-    return <></>;
   }
 
   return (
     <>
       <PostsSearch />
 
-      <div className="container-fluid g-0 pb-5 mb-5">
-        <div ref={listRef} className="row">
-          {posts?.posts.map((post) => (
-            <PostsItem key={post.id} post={post} />
-          ))}
+      {!posts ? (
+        <p>No posts yet</p>
+      ) : (
+        <div className="container-fluid g-0 pb-5 mb-5">
+          <div ref={listRef} className="row">
+            {posts?.posts.map((post) => (
+              <PostsItem key={post.id} post={post} />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="pagination">
         <div className="btn-group my-2 mx-auto btn-group-lg">

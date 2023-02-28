@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [isAuth, setIsAuth] = useState(true);
+  const [isAuth, setIsAuth] = useState(false);
   const [username, setUsername] = useState("");
 
   const login = async (username, password) => {
