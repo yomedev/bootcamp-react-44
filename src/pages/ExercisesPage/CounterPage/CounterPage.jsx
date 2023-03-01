@@ -1,10 +1,11 @@
 import { FiThumbsUp, FiThumbsDown } from "react-icons/fi";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { DISLIKE, LIKE } from "../../../redux/counter/counterTypes";
 
 const LIKES_DISELIKES_LS_KEY = "likesdislikes";
 
 const getLocalData = (key, defaultValue) => {
-  console.log("getLocalData");
   return (
     JSON.parse(localStorage.getItem(LIKES_DISELIKES_LS_KEY))[key] ??
     defaultValue
@@ -12,24 +13,18 @@ const getLocalData = (key, defaultValue) => {
 };
 
 export const CounterPage = ({ defaultLikes }) => {
-  const [likes, setLikes] = useState(() => getLocalData("likes", defaultLikes));
-  const [dislikes, setDislikes] = useState(() => getLocalData("dislikes", 0));
+  const {likes, dislikes} = useSelector((state) => state.counter);
 
-  useEffect(() => {
-    localStorage.setItem(
-      LIKES_DISELIKES_LS_KEY,
-      JSON.stringify({ likes, dislikes })
-    );
-  }, [likes, dislikes]);
+  const dispatch = useDispatch();
 
   const handleUpdate = (event) => {
     const { name } = event.currentTarget;
     switch (name) {
       case "like":
-        setLikes((prev) => prev + 1);
+        dispatch({ type: LIKE });
         break;
       case "dislike":
-        setDislikes((prev) => prev + 1);
+        dispatch({ type: DISLIKE });
         break;
       default:
         throw new Error("Name doesn't exist");
@@ -37,7 +32,6 @@ export const CounterPage = ({ defaultLikes }) => {
   };
 
   const total = likes - dislikes;
-  console.log("render");
   return (
     <div className="mb-5 p-5 text-white bg-dark rounded-3">
       <h2 className="text-center">Total</h2>

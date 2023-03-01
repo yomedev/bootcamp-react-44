@@ -1,92 +1,66 @@
 import React, { useEffect, useMemo, useReducer, useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import { UsersList } from "./components/UsersList";
-import usersJson from "../../data/users.json";
 import { NotFound } from "../NotFound/NotFound";
 import { SkillsFilter } from "./components/SkillsFilter";
 import { AvailabilityFilter } from "./components/AvailabilityFilter";
 import { SearchInput } from "./components/SearchInput";
 import { NewUserForm } from "./components/NewUserForm";
 import { Modal } from "../Modal/Modal";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  CHANGE_AVAILABILITY,
+  CHANGE_SEARCH,
+  CHANGE_SKILLS,
+  CREATE_NEW_USER,
+  DELETE_USER,
+  RESET_SEARCH,
+  TOGGLE_MODAL,
+} from "../../redux/users/usersTypes";
+import { createNewUserAction, deleteUserAction } from "../../redux/users/usersActions";
 
 const ALL_SKILL_VALUE = "all";
 
-const LOCAL_STORAGE_USERS_KEY = "users";
-
-const getLocalData = () => {
-  return JSON.parse(localStorage.getItem(LOCAL_STORAGE_USERS_KEY));
-};
-
-const usersReducer = (state, action) => {
-  switch (action.type) {
-    case "toggleModal":
-      return { ...state, isModalOpen: !state.isModalOpen };
-    case "deleteUser":
-      return {
-        ...state,
-        users: state.users.filter((user) => user.id !== action.payload),
-      };
-    case "createNewUser":
-      return { ...state, users: [action.payload, ...state.users] };
-    default:
-      throw new Error("Action doesn't exist");
-  }
-};
-
-const initialState = {
-  users: getLocalData() ?? usersJson,
-  isModalOpen: false,
-  isAvailableChecked: false,
-  skills: ALL_SKILL_VALUE,
-  search: "",
-};
-
 export const Users = () => {
-  const [state, dispatch] = useReducer(usersReducer, initialState);
-  const { users, isModalOpen } = state;
-
-  console.log(state);
-
-  // const [users, setUsers] = useState(() => getLocalData() ?? usersJson);
-  const [isAvailableChecked, setIsAvailableChecked] = useState(false);
-  const [skills, setSkills] = useState(ALL_SKILL_VALUE);
-  const [search, setSearch] = useState("");
-
-  useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_USERS_KEY, JSON.stringify(users));
-  }, [users]);
+  const {
+    data: users,
+    isModalOpen,
+    filter
+  } = useSelector((state) => state.users);
+  const {isAvailableChecked, skills, search} = filter
+  const dispatch = useDispatch();
 
   const handleDeleteUser = (userId) => {
-    // setUsers((prev) => prev.filter((user) => user.id !== userId));
-    dispatch({ type: "deleteUser", payload: userId });
+    // dispatch({ type: DELETE_USER, payload: userId });
+    dispatch(deleteUserAction(userId))
   };
 
   const handleCreateNewUser = (user) => {
-    // setUsers((prev) => [{ ...user, id: Date.now() }, ...prev]);
-    dispatch({ type: "createNewUser", payload: { ...user, id: Date.now() } });
-    dispatch({ type: "toggleModal" });
+    // dispatch({ type: CREATE_NEW_USER, payload: { ...user, id: Date.now() } });
+    dispatch(createNewUserAction(user))
+    dispatch({ type: TOGGLE_MODAL });
   };
 
   const toggleModal = () => {
-    dispatch({ type: "toggleModal" });
+    dispatch({ type: TOGGLE_MODAL });
   };
 
   const handleChangeAvailability = () => {
-    setIsAvailableChecked((prev) => !prev);
+    dispatch({ type: CHANGE_AVAILABILITY });
   };
 
   const handleChangeSkills = (event) => {
     const { value } = event.target;
-    setSkills(value);
+    dispatch({ type: CHANGE_SKILLS, payload: value})
   };
 
   const handleChangeSearch = (event) => {
     const { value } = event.target;
-    setSearch(value);
+    dispatch({type: CHANGE_SEARCH, payload: value})
   };
 
   const handleResetSearch = () => {
-    setSearch("");
+    dispatch({type: RESET_SEARCH})
   };
 
   const filteredUsers = useMemo(() => {

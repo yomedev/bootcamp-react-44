@@ -18,9 +18,12 @@ import { RegisterPage } from "./pages/RegisterPage/RegisterPage";
 import { CommentsPage } from "./pages/SinglePostPage/CommentsPage/CommentsPage";
 import UsersPage from "./pages/ExercisesPage/UsersPage";
 
+
 const HomePage = lazy(() => import("./pages/HomePage"));
 const PostsListPage = lazy(() => import("./pages/PostsListPage/"));
 const CounterPage = lazy(() => import("./pages/ExercisesPage/CounterPage"));
+
+
 
 const queryClient = new QueryClient();
 
