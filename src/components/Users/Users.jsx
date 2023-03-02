@@ -17,7 +17,9 @@ import {
   RESET_SEARCH,
   TOGGLE_MODAL,
 } from "../../redux/users/usersTypes";
-import { createNewUserAction, deleteUserAction } from "../../redux/users/usersActions";
+import { deleteUserAction, toggleModal } from "../../redux/users/usersActions";
+import { createNewUser, deleteUser, toggleModalAction } from "../../redux/users/usersSlice";
+import { createNewUserAction } from "../../redux/users/usersSlice";
 
 const ALL_SKILL_VALUE = "all";
 
@@ -32,17 +34,20 @@ export const Users = () => {
 
   const handleDeleteUser = (userId) => {
     // dispatch({ type: DELETE_USER, payload: userId });
-    dispatch(deleteUserAction(userId))
+    // dispatch(deleteUserAction(userId))
+    dispatch(deleteUser(userId))
   };
 
   const handleCreateNewUser = (user) => {
     // dispatch({ type: CREATE_NEW_USER, payload: { ...user, id: Date.now() } });
-    dispatch(createNewUserAction(user))
-    dispatch({ type: TOGGLE_MODAL });
+    // dispatch(createNewUserAction(user))
+    // dispatch({ type: TOGGLE_MODAL });
+    dispatch(createNewUser(user))
+    dispatch(toggleModalAction())
   };
 
   const toggleModal = () => {
-    dispatch({ type: TOGGLE_MODAL });
+    dispatch(toggleModalAction())
   };
 
   const handleChangeAvailability = () => {

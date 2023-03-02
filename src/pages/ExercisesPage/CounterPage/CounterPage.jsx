@@ -1,18 +1,9 @@
 import { FiThumbsUp, FiThumbsDown } from "react-icons/fi";
-import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { dislikeAction, likeAction } from "../../../redux/counter/counterActions";
 import { DISLIKE, LIKE } from "../../../redux/counter/counterTypes";
 
-const LIKES_DISELIKES_LS_KEY = "likesdislikes";
-
-const getLocalData = (key, defaultValue) => {
-  return (
-    JSON.parse(localStorage.getItem(LIKES_DISELIKES_LS_KEY))[key] ??
-    defaultValue
-  );
-};
-
-export const CounterPage = ({ defaultLikes }) => {
+export const CounterPage = () => {
   const {likes, dislikes} = useSelector((state) => state.counter);
 
   const dispatch = useDispatch();
@@ -21,10 +12,10 @@ export const CounterPage = ({ defaultLikes }) => {
     const { name } = event.currentTarget;
     switch (name) {
       case "like":
-        dispatch({ type: LIKE });
+        dispatch(likeAction());
         break;
       case "dislike":
-        dispatch({ type: DISLIKE });
+        dispatch(dislikeAction(15));
         break;
       default:
         throw new Error("Name doesn't exist");

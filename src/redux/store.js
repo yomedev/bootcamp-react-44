@@ -1,10 +1,29 @@
-import { createStore } from "redux";
-import {rootReducer} from './reducer'
-import { composeWithDevTools } from 'redux-devtools-extension';
+import { configureStore } from "@reduxjs/toolkit";
+import { persistStore } from "redux-persist";
+import { rootReducer } from "./reducer";
+
+
+
+export const store = configureStore({
+  reducer: rootReducer,
+  devTools: process.env.NODE_ENV === "development",
+  // reducer: {
+  //   counter: counterReducer,
+  //   users: usersReducer
+  // },
+});
+
+export const persistor = persistStore(store)
+
+// import { counterReducer } from './counter/counterReducer';
+// import { usersReducer } from './users/usersReducer';
 // import { initialState } from "./initialState";
 
 // export const store = createStore(reducer, initialState);
-export const store = createStore(rootReducer, composeWithDevTools());
+// export const store = createStore(rootReducer, composeWithDevTools());
+// if (typeof reducer === 'object') {
+//   reducer = combineReducers(reducer)
+// }
 
 // console.log(store.getState());
 // store.dispatch({ type: INCREMENT });
