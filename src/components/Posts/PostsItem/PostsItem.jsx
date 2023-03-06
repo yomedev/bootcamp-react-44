@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
 
 import { cutString } from "../../../helpers/cut-string";
+import { deletePostService } from "../../../services/postsService";
 
 export const PostsItem = ({ post }) => {
   const { isAuth } = useContext(AuthContext);
@@ -22,18 +23,18 @@ export const PostsItem = ({ post }) => {
         <div className="card-body">
           <h5 className="card-title">{post.title}</h5>
 
-          <p className="card-text">{cutString(post.body, 60)}</p>
+          <p className="card-text">{cutString(post.content, 60)}</p>
 
           <ul className="list-group list-group-flush mb-4">
-            <li className="list-group-item">Reactions: {post.reactions}</li>
+            <li className="list-group-item">Reactions: {post.views}</li>
             <li className="list-group-item">
-              Created: {formatDistanceToNow(post.created_at)}
+              Created: {formatDistanceToNow(new Date(post.created_at))}
             </li>
           </ul>
 
           {isAuth && (
             <div className="d-flex">
-              <button type="button" className="btn btn-danger">
+              <button onClick={() => deletePostService(post.id)} type="button" className="btn btn-danger">
                 Delete post
               </button>
 

@@ -51,4 +51,3 @@ export const usersReducer = usersSlice.reducer;
 export const { deleteUser, createNewUser, toggleModalAction } =
   usersSlice.actions;
 
-console.log(usersSlice);

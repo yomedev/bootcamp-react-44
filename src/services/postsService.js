@@ -2,32 +2,58 @@ import axios from "axios";
 
 const POSTS_PER_PAGE = 9;
 
+// const postsApi = axios.create({
+//   baseURL: "https://dummyjson.com/",
+//   params: {
+//     limit: POSTS_PER_PAGE,
+//   },
+// });
 const postsApi = axios.create({
-  baseURL: "https://dummyjson.com/",
+  baseURL: "http://70.34.201.18:8080/",
   params: {
     limit: POSTS_PER_PAGE,
   },
 });
 
 export const getPostsService = async ({ search = "", page = 1 }) => {
-  const endpoint = search ? "posts/search" : "posts";
-  const skip = (page - 1) * POSTS_PER_PAGE;
-  const { data } = await postsApi.get(endpoint, {
+  const { data } = await postsApi.get("posts", {
     params: {
-      q: search || undefined,
-      skip: skip || undefined,
+      search: search || undefined,
+      page: page || undefined,
     },
   });
+  return data;
+};
 
-  const postsWithImages = await addImagesToPosts(data.posts);
-
-  return { ...data, posts: postsWithImages };
+export const deletePostService = async (postId) => {
+  const { data } = await postsApi.delete("posts/" + postId);
+  return data;
 };
 
 export const createNewPostService = async (body) => {
-  const { data } = await postsApi.post("/posts/add", body);
+  const { data } = await postsApi.post("posts", body);
   return data;
 };
+
+// export const getPostsService = async ({ search = "", page = 1 }) => {
+//   const endpoint = search ? "posts/search" : "posts";
+//   const skip = (page - 1) * POSTS_PER_PAGE;
+//   const { data } = await postsApi.get(endpoint, {
+//     params: {
+//       q: search || undefined,
+//       skip: skip || undefined,
+//     },
+//   });
+
+//   const postsWithImages = await addImagesToPosts(data.posts);
+
+//   return { ...data, posts: postsWithImages };
+// };
+
+// export const createNewPostService = async (body) => {
+//   const { data } = await postsApi.post("/posts/add", body);
+//   return data;
+// };
 
 const imagesApi = axios.create({
   baseURL: "https://pixabay.com/api/",

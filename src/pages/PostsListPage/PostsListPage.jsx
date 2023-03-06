@@ -1,11 +1,9 @@
-import { useEffect, useRef } from "react";
-import { useQuery } from "react-query";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { getPostsService } from "../../services/postsService";
 import { Button } from "../../components/Button";
 import { PostsItem, PostsLoader, PostsSearch } from "../../components/Posts";
 import { toast } from "react-toastify";
-import { useFetch } from "../../hooks/useFetch";
 
 const fetchStatus = {
   Idle: "idle",
@@ -18,6 +16,9 @@ export const PostsListPage = () => {
   const location = useLocation();
   const isRegister = location.state?.isRegister ?? false;
 
+  const [posts, setPosts] = useState(null);
+  const [status, setStatus] = useState(fetchStatus.Idle);
+
   useEffect(() => {
     if (isRegister) {
       toast.info("Welcome");
@@ -28,18 +29,19 @@ export const PostsListPage = () => {
   const search = searchParams.get("search") ?? "";
   const page = searchParams.get("page") ?? 1;
 
-  // const {data: posts, isLoading, isError } = useFetch(getPostsService, page, search)
-
-  const {
-    data: posts,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["posts", search, page],
-    queryFn: () => getPostsService({ search, page }),
-    // enabled: search !== "",
-    select: (data) => data
-  });
+  useEffect(() => {
+    const fetchPosts = async () => {
+      setStatus(fetchStatus.Loading);
+      try {
+        const postsRes = await getPostsService({ search, page });
+        setPosts(postsRes);
+        setStatus(fetchStatus.Success);
+      } catch (error) {
+        setStatus(fetchStatus.Error);
+      }
+    };
+    fetchPosts();
+  }, [page, search]);
 
   const listRef = useRef(null);
   const scrollIndexRef = useRef(null);
@@ -54,14 +56,13 @@ export const PostsListPage = () => {
     });
   }, [posts?.posts]);
 
-  if (isLoading) {
+  if (status === fetchStatus.Loading || status === fetchStatus.Idle) {
     return <PostsLoader />;
   }
 
-  if (isError) {
+  if (status === fetchStatus.Error) {
     return <p>Something went wrong</p>;
   }
-
   return (
     <>
       <PostsSearch />
@@ -71,7 +72,7 @@ export const PostsListPage = () => {
       ) : (
         <div className="container-fluid g-0 pb-5 mb-5">
           <div ref={listRef} className="row">
-            {posts?.posts.map((post) => (
+            {posts?.data.map((post) => (
               <PostsItem key={post.id} post={post} />
             ))}
           </div>
@@ -80,10 +81,10 @@ export const PostsListPage = () => {
 
       <div className="pagination">
         <div className="btn-group my-2 mx-auto btn-group-lg">
-          {[...Array(10)].map((_, index) => (
+          {[...Array(posts.total_pages)].map((_, index) => (
             <Button
               key={index}
-              disabled={page === index + 1}
+              disabled={posts.page === index + 1}
               className="btn-primary page-item"
               onClick={() => setSearchParams({ page: index + 1, search })}
             >
