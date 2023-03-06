@@ -9,6 +9,11 @@ const postsApi = axios.create({
   },
 });
 
+export const getPostsForMiddleware = async () => {
+  const {data} = await axios.get('http://70.34.201.18:8080/posts')
+  return data
+}
+
 export const getPostsService = async ({ search = "", page = 1 }) => {
   const endpoint = search ? "posts/search" : "posts";
   const skip = (page - 1) * POSTS_PER_PAGE;

@@ -17,6 +17,7 @@ import { LoginPage } from "./pages/LoginPage/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage/RegisterPage";
 import { CommentsPage } from "./pages/SinglePostPage/CommentsPage/CommentsPage";
 import UsersPage from "./pages/ExercisesPage/UsersPage";
+import MiddlewarePage from "./pages/ExercisesPage/MiddlewarePage";
 
 
 const HomePage = lazy(() => import("./pages/HomePage"));
@@ -45,6 +46,7 @@ export const App = () => {
               <Route path="counter" element={<CounterPage />} />
               <Route path="re-render" element={<RerenderPage />} />
               <Route path="users" element={<UsersPage />} />
+              <Route path="middleware" element={<MiddlewarePage />} />
             </Route>
             <Route path="login" element={<LoginPage />} />
             <Route path="register" element={<RegisterPage />} />
