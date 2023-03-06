@@ -1,10 +1,13 @@
 import React from 'react'
-import { getPostsForMiddleware } from '../../../services/postsService'
+import { useDispatch } from 'react-redux'
+import { getPostsThunk } from '../../../redux/store'
 
 export const MiddlewarePage = () => {
 
+  const dispatch = useDispatch()
+
   const handleClick = () => {
-    getPostsForMiddleware().then(data => console.log(data))
+    dispatch(getPostsThunk())
   }
 
   return (
