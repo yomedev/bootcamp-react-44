@@ -1,14 +1,26 @@
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { useContext } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
 
 import { cutString } from "../../../helpers/cut-string";
+import { deletePostThunk } from "../../../redux/posts/postsThunk";
 import { deletePostService } from "../../../services/postsService";
 
 export const PostsItem = ({ post }) => {
   const { isAuth } = useContext(AuthContext);
   const location = useLocation();
+
+  const [searchParams] = useSearchParams();
+  const search = searchParams.get("search");
+  const page = searchParams.get("page");
+
+  const dispatch = useDispatch();
+
+  const handleDeletePost = () => {
+    dispatch(deletePostThunk({ postId: post.id, params: { page, search } }));
+  };
   return (
     <div className="col-12 col-xl-6 col-xxl-4 mb-4">
       <div className="card">
@@ -34,7 +46,11 @@ export const PostsItem = ({ post }) => {
 
           {isAuth && (
             <div className="d-flex">
-              <button onClick={() => deletePostService(post.id)} type="button" className="btn btn-danger">
+              <button
+                onClick={handleDeletePost}
+                type="button"
+                className="btn btn-danger"
+              >
                 Delete post
               </button>
 

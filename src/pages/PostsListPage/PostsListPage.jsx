@@ -4,6 +4,9 @@ import { getPostsService } from "../../services/postsService";
 import { Button } from "../../components/Button";
 import { PostsItem, PostsLoader, PostsSearch } from "../../components/Posts";
 import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { getPostsThunk } from "../../redux/posts/postsThunk";
+import { selectAllPosts } from "../../redux/posts/postsSelect";
 
 const fetchStatus = {
   Idle: "idle",
@@ -16,8 +19,8 @@ export const PostsListPage = () => {
   const location = useLocation();
   const isRegister = location.state?.isRegister ?? false;
 
-  const [posts, setPosts] = useState(null);
-  const [status, setStatus] = useState(fetchStatus.Idle);
+  const { posts, status } = useSelector(selectAllPosts);
+  const dispatch = useDispatch()
 
   useEffect(() => {
     if (isRegister) {
@@ -30,18 +33,8 @@ export const PostsListPage = () => {
   const page = searchParams.get("page") ?? 1;
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      setStatus(fetchStatus.Loading);
-      try {
-        const postsRes = await getPostsService({ search, page });
-        setPosts(postsRes);
-        setStatus(fetchStatus.Success);
-      } catch (error) {
-        setStatus(fetchStatus.Error);
-      }
-    };
-    fetchPosts();
-  }, [page, search]);
+    dispatch(getPostsThunk({page, search}))
+  }, [page, search, dispatch]);
 
   const listRef = useRef(null);
   const scrollIndexRef = useRef(null);
