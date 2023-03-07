@@ -5,12 +5,16 @@ import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
 
 import { cutString } from "../../../helpers/cut-string";
+import { useDeletePostMutation } from "../../../redux/posts/postsApi";
 import { deletePostThunk } from "../../../redux/posts/postsThunk";
 import { deletePostService } from "../../../services/postsService";
 
 export const PostsItem = ({ post }) => {
   const { isAuth } = useContext(AuthContext);
   const location = useLocation();
+
+  const [deletePost, { isSuccess }] = useDeletePostMutation();
+  console.log(isSuccess);
 
   const [searchParams] = useSearchParams();
   const search = searchParams.get("search");
@@ -19,7 +23,8 @@ export const PostsItem = ({ post }) => {
   const dispatch = useDispatch();
 
   const handleDeletePost = () => {
-    dispatch(deletePostThunk({ postId: post.id, params: { page, search } }));
+    // dispatch(deletePostThunk({ postId: post.id, params: { page, search } }));
+    deletePost(post.id);
   };
   return (
     <div className="col-12 col-xl-6 col-xxl-4 mb-4">

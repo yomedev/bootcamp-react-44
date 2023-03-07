@@ -1,15 +1,11 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { UsersItem } from "./UsersItem";
 
 export const UsersList = ({ users, onDeleteUser }) => {
-  const getOpenToWorkTotal = useMemo(() => {
-    console.log('reduce')
-    return users.reduce((acc, user) => (user.isOpenToWork ? acc + 1 : acc), 0);
-  }, [users]);
+  
 
   return (
     <>
-      <p>Open to work: {getOpenToWorkTotal}</p>
       <ul className="mb-5" style={{ listStyle: "none" }}>
         {users.map((user) => (
           <UsersItem onDeleteUser={onDeleteUser} key={user.id} user={user} />

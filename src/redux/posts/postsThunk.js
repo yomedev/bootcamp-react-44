@@ -1,5 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { createNewPostService, deletePostService, getPostsService } from "../../services/postsService";
+import {
+  createNewPostService,
+  deletePostService,
+  getPostsService,
+} from "../../services/postsService";
 import {
   getPostsFulfilled,
   getPostsPending,
@@ -16,29 +20,21 @@ import {
 //   }
 // };
 
-export const getPostsThunk = createAsyncThunk(
-  "posts/getPosts",
-  async (params, { rejectWithValue }) => {
-    try {
-      return await getPostsService(params);
-    } catch {
-      return rejectWithValue();
-    }
-  }
-);
+export const getPostsThunk = createAsyncThunk("posts/getPosts", (params) => {
+  return getPostsService(params);
+});
 
 export const deletePostThunk = createAsyncThunk(
   "posts/deletePost",
-  async ({postId, params}, { rejectWithValue, dispatch }) => {
+  async ({ postId, params }, { rejectWithValue, dispatch }) => {
     try {
-     await deletePostService(postId);
-     dispatch(getPostsThunk(params))
+      await deletePostService(postId);
+      dispatch(getPostsThunk(params));
     } catch {
       return rejectWithValue();
     }
   }
 );
-
 
 // export const createNewPostThunk = createAsyncThunk(
 //   "posts/createNewPost",
@@ -51,5 +47,3 @@ export const deletePostThunk = createAsyncThunk(
 //     }
 //   }
 // );
-
-

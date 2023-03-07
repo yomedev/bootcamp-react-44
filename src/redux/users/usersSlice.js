@@ -1,24 +1,5 @@
-import { createAction, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { usersInitialState } from "./usersInitialState";
-
-// const store = {
-//   state: null
-// }
-
-// const testReducer  = (state, action) => {
-//   return {...state}
-// }
-
-// const copyState = {...state}
-
-// const immerReducer = (state, action) => {
-//   return state
-// }
-
-// export const createNewUserAction = createAction(
-//   "users/createNewUser",
-//   (user) => ({ payload: { ...user, id: Date.now() } })
-// );
 
 const usersSlice = createSlice({
   name: "users",
@@ -37,17 +18,14 @@ const usersSlice = createSlice({
     toggleModalAction: (state) => {
       state.isModalOpen = !state.isModalOpen;
     },
+    changeSearchAction: (state, { payload }) => {
+      state.search = payload;
+    },
     clearState: () => usersInitialState,
   },
-  // extraReducers: {
-  //   [createNewUserAction]: (state, { payload }) => {
-  //     state.data.unshift(payload);
-  //   },
-  // },
 });
 
 export const usersReducer = usersSlice.reducer;
 
-export const { deleteUser, createNewUser, toggleModalAction } =
+export const { deleteUser, createNewUser, toggleModalAction, changeSearchAction } =
   usersSlice.actions;
-
