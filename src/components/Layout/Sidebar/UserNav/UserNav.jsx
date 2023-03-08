@@ -1,22 +1,20 @@
-import { useContext } from "react";
+import { useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
-import { AuthContext } from "../../../../context/AuthContext";
+import { logoutAction } from "../../../../redux/auth/authSlice";
 
 import { Button } from "../../../Button";
+import { UserCard } from "../../../UserCard/UserCard";
 
-// const CustomLink = styled(NavLink)`
-//   & .active {
 
-//   }
-// `
+export const UserNav = () => {
 
-export const Nav = () => {
-  const { logout } = useContext(AuthContext);
+  const dispatch = useDispatch()
 
   return (
     <div className="d-flex flex-column justify-content-between h-100">
       <div className={"d-flex flex-column justify-content-between"}>
         <h2 className="h3 mb-4">Welcome back!</h2>
+        <UserCard />
         <NavLink
           to="/"
           style={{ textAlign: "left", marginLeft: "-10px" }}
@@ -55,7 +53,7 @@ export const Nav = () => {
         </NavLink>
       </div>
 
-      <Button onClick={logout} className="btn-danger mt-auto">
+      <Button onClick={() => dispatch(logoutAction())} className="btn-danger mt-auto">
         Log Out
       </Button>
     </div>

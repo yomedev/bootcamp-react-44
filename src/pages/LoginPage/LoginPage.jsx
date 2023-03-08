@@ -1,92 +1,77 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { useAuth } from "../../context/AuthContext";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 
-const schema = yup
-  .object({
-    email: yup.string().required().min(5),
-    password: yup.string().required().min(8),
-  })
-  .required();
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { loginThunk } from "../../redux/auth/authThunk";
 
 const year = new Date().getFullYear();
 
-const formInitialState = {
-  email: "",
-  password: "",
-};
-
 export const LoginPage = () => {
-  const { login } = useAuth();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    mode: "all",
-    defaultValues: formInitialState,
-    resolver: yupResolver(schema),
+  const [values, setValues] = useState({
+    email: "",
+    password: "",
   });
 
-  console.log(errors);
+  const handleChange = (event) => {
+    const { value, name } = event.target;
+    setValues((prev) => ({ ...prev, [name]: value }));
+  };
 
-  const onSubmit = (data) => {
-    console.log(data);
-    login(data.email, data.password)
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    dispatch(loginThunk(values))
+      .unwrap()
       .then(() => navigate("/posts", { replace: true }))
-      .catch(() => toast.error("Incorect password"));
+      .catch(() => toast.error("Error"));
   };
 
   return (
     <form
-      className="form-signin d-flex align-items-center justify-content-center mt-5"
-      onSubmit={handleSubmit(onSubmit)}
+      action="#"
+      className="mt-5 mx-auto p-0"
+      style={{ width: "450px" }}
+      onSubmit={handleSubmit}
     >
-      <div className="d-block" style={{ width: 300, height: "max-content" }}>
-        <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
+      <h1 className="h3 mb-3 fw-normal">Please Log In</h1>
 
-        <div className="form-floating">
-          <input
-            // {...register("email", {
-            //   required: { value: true, message: "Email is required" },
-            //   minLength: {
-            //     value: 5,
-            //     message: "Email needs to be at least 5 characters",
-            //   },
-            // })}
-            {...register("email")}
-            type="email"
-            className="form-control"
-            id="email"
-            placeholder="name@example.com"
-            // ref={inputRef}
-          />
-          <p style={{ color: "red" }}>{errors.email?.message}</p>
-          <label htmlFor="email">Email address</label>
-        </div>
-        <div className="form-floating mt-4">
-          <input
-            {...register("password")}
-            type="password"
-            className="form-control"
-            id="pass"
-            placeholder="Password"
-          />
-          <p style={{ color: "red" }}>{errors.password?.message}</p>
-          <label htmlFor="pass">Password</label>
-        </div>
-
-        <button className="w-100 btn btn-lg btn-primary mt-4" type="submit">
-          Sign in
-        </button>
-
-        <p className="mt-5 mb-3 text-muted">© {year}</p>
+      <div className="form-floating my-4">
+        <input
+          id="email"
+          name="email"
+          type="email"
+          autoComplete="username"
+          value={values.email}
+          onChange={handleChange}
+          className="form-control"
+        />
+        <label htmlFor="email">Email address</label>
       </div>
+
+      <div className="form-floating my-4">
+        <input
+          id="password"
+          name="password"
+          type="password"
+          autoComplete="current-password"
+          value={values.password}
+          onChange={handleChange}
+          className="form-control"
+        />
+        <label htmlFor="password">Password</label>
+      </div>
+
+      <Link to="/join" className="d-block my-4">
+        Dont have account?
+      </Link>
+
+      <button className="w-100 mt-2 btn btn-lg btn-primary" type="submit">
+        Log In
+      </button>
+      <p className="mt-5 mb-3 text-muted">© {year}</p>
     </form>
   );
 };

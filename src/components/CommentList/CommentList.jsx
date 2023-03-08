@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import { toast } from 'react-toastify';
 
-import { getComments } from '../../services/commentsService';
+import {getCommentsListService } from '../../services/commentsService';
 
 export const CommentList = ({ comments, setComments }) => {
   const {postId} = useParams()
@@ -12,7 +12,7 @@ export const CommentList = ({ comments, setComments }) => {
 
   const fetchComments = useCallback(
     () =>
-      getComments(postId)
+    getCommentsListService(postId)
         .then((data) => setComments(data.comments))
         .catch(() => {
           toast.error('Something went wrong!');

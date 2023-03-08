@@ -2,12 +2,24 @@ import axios from "axios";
 
 const commentsApi = axios.create({
   baseURL: 'https://dummyjson.com/',
-  params: {
-    limit: 3
-  }
 })
 
-export const getComments = async (postId) => {
-  const {data} = await commentsApi.get('comments/post/'+ postId)
-  return data
-}
+const defaultParams = {
+  limit: 4,
+};
+
+export const createNewCommentService = async (postId, body) => {
+  const { data } = await commentsApi.post(`/posts/${postId}/comments`, body);
+  return data;
+};
+
+export const getCommentsListService = async (postId, params = {}) => {
+  const { data } = await commentsApi.get(`/posts/${postId}/comments`, {
+    params: { ...defaultParams, ...params },
+  });
+  return data;
+};
+
+export const deleteCommentService = async commentId => {
+  return commentsApi.delete(`/comments/${commentId}`);
+};
