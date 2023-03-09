@@ -16,6 +16,8 @@ import RtkQueryPosts from "./pages/RtkQueryPosts";
 import { useDispatch, useSelector } from "react-redux";
 import { getProfileThunk } from "./redux/profile/profileThunk";
 import { fetchStatus } from "./constants/fetchStatus";
+import { PrivateRoute } from "./components/PrivateRoute/PrivateRoute";
+import { PublicRoute } from "./components/PublicRoute/PublicRoute";
 
 const HomePage = lazy(() => import("./pages/HomePage"));
 const PostsListPage = lazy(() => import("./pages/PostsListPage/"));
@@ -23,7 +25,7 @@ const CounterPage = lazy(() => import("./pages/ExercisesPage/CounterPage"));
 
 export const App = () => {
   const dispatch = useDispatch();
-  const status = useSelector((state) => state.auth.status);
+  const { status, access_token } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (status === fetchStatus.Success) {
@@ -37,20 +39,25 @@ export const App = () => {
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
           <Route path="posts" element={<PostsListPage />} />
-          <Route path="rtk-posts" element={<RtkQueryPosts />} />
           <Route path="posts/:postId" element={<SinglePostPage />}>
             <Route path="comments" element={<CommentsPage />} />
           </Route>
-          <Route path="new-post" element={<NewPostPage />} />
-          <Route path="exercises" element={<ExercisesPage />}>
-            <Route index element={<Navigate to="timer" />} />
-            <Route path="timer" element={<TimerPage />} />
-            <Route path="counter" element={<CounterPage />} />
-            <Route path="re-render" element={<RerenderPage />} />
-            <Route path="users" element={<UsersPage />} />
+          <Route path="" element={<PrivateRoute />}>
+            <Route path="new-post" element={<NewPostPage />} />
+            <Route path="exercises" element={<ExercisesPage />}>
+              <Route index element={<Navigate to="timer" />} />
+              <Route path="timer" element={<TimerPage />} />
+              <Route path="counter" element={<CounterPage />} />
+              <Route path="re-render" element={<RerenderPage />} />
+              <Route path="users" element={<UsersPage />} />
+            </Route>
           </Route>
-          <Route path="login" element={<LoginPage />} />
-          <Route path="join" element={<JoinPage />} />
+
+          <Route path="" element={<PublicRoute />}>
+            <Route path="login" element={<LoginPage />} />
+            <Route path="join" element={<JoinPage />} />
+          </Route>
+
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>

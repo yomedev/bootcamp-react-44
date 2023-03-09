@@ -1,14 +1,9 @@
-import axios from "axios";
-import { privateApi } from "../http/http";
+import { privateApi, publicApi } from "../http/http";
 
 const POSTS_PER_PAGE = 9;
 
-const postsApi = axios.create({
-  baseURL: 'http://70.34.201.18:4444/',
-});
-
 export const getPostsService = async (params) => {
-  const { data } = await postsApi.get("posts", {
+  const { data } = await publicApi.get("posts", {
     params: {
       ...params,
       limit: POSTS_PER_PAGE
@@ -18,12 +13,12 @@ export const getPostsService = async (params) => {
 };
 
 export const getSinglePostService = async (id, params) => {
-  const { data } = await postsApi.get(`/posts/${id}`, { params });
+  const { data } = await publicApi.get(`/posts/${id}`, { params });
   return data;
 };
 
 export const deletePostService = async (postId) => {
-  const { data } = await postsApi.delete("posts/" + postId);
+  const { data } = await privateApi.delete("posts/" + postId);
   return data;
 };
 

@@ -3,10 +3,11 @@ import { useState } from "react";
 import classNames from "classnames";
 import { toast } from "react-toastify";
 
-import { createNewCommentService } from "../../services/comments.service";
+import { createNewCommentService } from "../../../services/commentsService";
+import { useParams } from "react-router";
 
 export const CommentForm = ({ setComments }) => {
-  const postId = 10; // hardcoded
+  const {postId} = useParams();
 
   const [isLoading, setIsLoading] = useState(false);
   const [content, setContent] = useState("");
@@ -23,16 +24,17 @@ export const CommentForm = ({ setComments }) => {
     }
 
     setIsLoading(true);
-    // createNewCommentService(postId, { content })
-    //   .then(data => {
-    //     toast.success('You have successfully created a new comment!');
-    //     setComments(prev => ({ ...prev, data: [data, ...prev.data] }));
-    //     handleReset();
-    //   })
-    //   .catch(() => {
-    //     toast.error('Something went wrong!');
-    //   })
-    //   .finally(() => setIsLoading(false));
+    createNewCommentService(postId, { content })
+      .then(data => {
+        console.log(data);
+        toast.success('You have successfully created a new comment!');
+        setComments(prev => ({ ...prev, data: [data].concat(prev?.data ?? []) }));
+        handleReset();
+      })
+      .catch(() => {
+        toast.error('Something went wrong!');
+      })
+      .finally(() => setIsLoading(false));
   };
 
   return (

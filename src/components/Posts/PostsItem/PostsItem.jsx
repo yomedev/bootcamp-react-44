@@ -1,6 +1,6 @@
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { useContext } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
 
@@ -12,6 +12,9 @@ import { deletePostService } from "../../../services/postsService";
 export const PostsItem = ({ post }) => {
   const { isAuth } = useContext(AuthContext);
   const location = useLocation();
+  const user = useSelector((state) => state.profile.data);
+
+
 
   const [deletePost, { isSuccess }] = useDeletePostMutation();
   console.log(isSuccess);
@@ -51,13 +54,15 @@ export const PostsItem = ({ post }) => {
 
           {isAuth && (
             <div className="d-flex">
-              <button
-                onClick={handleDeletePost}
-                type="button"
-                className="btn btn-danger"
-              >
-                Delete post
-              </button>
+              {user?.id === post.user_id && (
+                <button
+                  onClick={handleDeletePost}
+                  type="button"
+                  className="btn btn-danger"
+                >
+                  Delete post
+                </button>
+              )}
 
               <Link
                 to={`/posts/${post.id}`}
